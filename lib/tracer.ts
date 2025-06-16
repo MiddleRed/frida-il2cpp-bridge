@@ -292,16 +292,15 @@ namespace Il2Cpp {
             const startIndex = +!method.isStatic | +Il2Cpp.unityVersionIsBelow201830;
 
             function better_hex(value: any, type: any) {                   
-                    if(type.toString().includes("System.Byte[]")) {
-                    if (typeof value[Symbol.iterator] === 'function') {
-                        //console.log("Array");
-                        //console.log(Uint8Array.from(value).length);
-                        return Buffer.from(Uint8Array.from(value)).toString('hex');
-                    }
-                    //return String(value).slice(0, 30);
-                    return Buffer.from(Uint8Array.from(eval(value.toString()))).toString('hex');
-                    return "very long hex";//value.readPointer().toString(16).padStart(8, "0");
+                if(type.toString().includes("System.Byte[]")) {
+                if (typeof value[Symbol.iterator] === 'function') {
+                    //console.log("Array");
+                    //console.log(Uint8Array.from(value).length);
+                    return Buffer.from(Uint8Array.from(value)).toString('hex');
                 }
+                //return String(value).slice(0, 30);
+                return Buffer.from(Uint8Array.from(eval(value.toString()))).toString('hex');
+                return "very long hex";//value.readPointer().toString(16).padStart(8, "0");
             }
 
             const callback = function (this: CallbackContext | InvocationContext, ...args: any[]) {

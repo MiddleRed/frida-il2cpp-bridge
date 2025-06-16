@@ -23,7 +23,8 @@
   "type": "module",
   "types": "dist/index.d.ts",
   "files": [
-    "dist", "cli"
+    "dist",
+    "cli"
   ],
   "scripts": {
     "prepare": "make dist",
@@ -42,6 +43,7 @@
   },
   "devDependencies": {
     "@types/frida-gum": "^19.0.0",
+    "@types/node": "^24.0.3",
     "ts-patch": "^3.2.1",
     "ts-transformer-inline-file": "^0.2.0"
   },

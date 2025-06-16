@@ -291,20 +291,32 @@ namespace Il2Cpp {
 
             const startIndex = +!method.isStatic | +Il2Cpp.unityVersionIsBelow201830;
 
+            function better_hex(value: any, type: any) {                   
+                if(String(type).includes("System.Byte[]")) {
+                if (typeof value[Symbol.iterator] === 'function') {
+                    //console.log("Array");
+                    //console.log(Uint8Array.from(value).length);
+                    return Buffer.from(Uint8Array.from(value)).toString('hex');
+                }
+                //return String(value).slice(0, 30);
+                return Buffer.from(Uint8Array.from(eval(String(value)))).toString('hex');
+                return "very long hex";//value.readPointer().toString(16).padStart(8, "0");
+            }
+
             const callback = function (this: CallbackContext | InvocationContext, ...args: any[]) {
                 if ((this as InvocationContext).threadId == threadId) {
                     const thisParameter = method.isStatic ? undefined : new Il2Cpp.Parameter("this", -1, method.class.type);
                     const parameters = thisParameter ? [thisParameter].concat(method.parameters) : method.parameters;
 
                     // prettier-ignore
-                    state.buffer.push(`\x1b[2m0x${paddedVirtualAddress}\x1b[0m ${`│ `.repeat(state.depth++)}┌─\x1b[35m${method.class.type.name}::\x1b[1m${method.name}\x1b[0m\x1b[0m(${parameters.map(e => `\x1b[32m${e.name}\x1b[0m = \x1b[31m${fromFridaValue(args[e.position + startIndex], e.type)}\x1b[0m`).join(", ")})`);
+                    state.buffer.push(`\x1b[2m0x${paddedVirtualAddress}\x1b[0m ${`│ `.repeat(state.depth++)}┌─\x1b[35m${method.class.type.name}::\x1b[1m${method.name}\x1b[0m\x1b[0m(${parameters.map(e => `\x1b[32m${e.name}\x1b[0m = \x1b[31m${better_hex(fromFridaValue(args[e.position + startIndex], e.type), e.type)}\x1b[0m`).join(", ")})`);
                 }
 
                 const returnValue = method.nativeFunction(...args);
 
                 if ((this as InvocationContext).threadId == threadId) {
                     // prettier-ignore
-                    state.buffer.push(`\x1b[2m0x${paddedVirtualAddress}\x1b[0m ${`│ `.repeat(--state.depth)}└─\x1b[33m${method.class.type.name}::\x1b[1m${method.name}\x1b[0m\x1b[0m${returnValue == undefined ? "" : ` = \x1b[36m${fromFridaValue(returnValue, method.returnType)}`}\x1b[0m`);
+                    state.buffer.push(`\x1b[2m0x${paddedVirtualAddress}\x1b[0m ${`│ `.repeat(--state.depth)}└─\x1b[33m${method.class.type.name}::\x1b[1m${method.name}\x1b[0m\x1b[0m${returnValue == undefined ? "" : ` = \x1b[36m${better_hex(fromFridaValue(returnValue, method.returnType), method.returnType)}`}\x1b[0m`);
                     state.flush();
                 }
 
